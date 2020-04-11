@@ -101,6 +101,8 @@ abstract class ClassType(
         if (modify) {
             config.save(f)
         }
+        getSkills().forEach(Skill::loadConfig)
+        getPassives().forEach(Passive::loadConfig)
     }
 
     abstract fun getSkills(): List<Skill>
