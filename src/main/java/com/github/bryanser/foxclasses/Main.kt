@@ -1,17 +1,20 @@
-package com.github.bryanser.foxclasses;
+package com.github.bryanser.foxclasses
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPlugin
 
-public final class Main extends JavaPlugin {
+class Main : JavaPlugin() {
 
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
-
+    override fun onLoad() {
+        Plugin = this
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
+    override fun onEnable() {
+    }
+
+    override fun onDisable() {
+    }
+
+    companion object {
+        lateinit var Plugin: Main
     }
 }

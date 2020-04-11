@@ -1,5 +1,4 @@
 name: FoxClasses
 version: ${project.version}
-main: com.github.bryanser.foxclasses.Main
-api-version: 1.13
+main: com.github.bryanser.foxclasses.Main\
 depend: [FoxClasses]
