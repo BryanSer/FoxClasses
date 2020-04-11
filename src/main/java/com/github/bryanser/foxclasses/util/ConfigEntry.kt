@@ -41,5 +41,23 @@ open class ConfigEntry<T>(
         }) { cs, ce ->
             cs[ce.key] = default.replace("§", "&")
         }
+
+        fun <V> mapConfig(key: String, map: Map<Int, V>): ConfigEntry<(Int) -> V?> {
+            return ConfigEntry<(Int) -> V?>(key, provider = fun(cs, ce): (Int) -> V? {
+                val e = cs.getConfigurationSection(key)
+                val lv = hashMapOf<Int, V>()
+                for (key in e.getKeys(false)) {
+                    lv[key.toInt()] = e.get(key) as V
+                }
+                return fun(t): V? {
+                    return lv[t]
+                }
+            }) { cs, ce ->
+                val e = cs.createSection(key)
+                for ((k, v) in map) {
+                    e[k.toString()] = v
+                }
+            }
+        }
     }
 }
