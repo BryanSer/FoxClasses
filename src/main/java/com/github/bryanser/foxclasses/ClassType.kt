@@ -79,6 +79,9 @@ abstract class ClassType(
         cs[ce.key] = defaultCastItem.id
     }
 
+
+    private var inited = false
+
     open fun loadConfig() {
         val f = File(classFolder, "$name.yml")
         if (!f.exists()) {
@@ -103,11 +106,25 @@ abstract class ClassType(
         }
         getSkills().forEach(Skill::loadConfig)
         getPassives().forEach(Passive::loadConfig)
+        if (inited) {
+            getSkills().forEach(Skill::disable)
+            getPassives().forEach(Passive::disable)
+        }
+        inited = true
+        getSkills().forEach(Skill::init)
+        getPassives().forEach(Passive::init)
     }
 
     abstract fun getSkills(): List<Skill>
 
     abstract fun getPassives(): List<Passive>
+
+    val talent: List<Talent> by lazy {
+        val list = mutableListOf<Talent>()
+        list.addAll(getSkills())
+        list.addAll(getPassives())
+        list
+    }
 
     companion object {
         val classFolder: File by lazy {

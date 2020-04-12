@@ -4,7 +4,11 @@ import com.github.bryanser.foxclasses.util.ConfigEntry
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
-abstract class Passive(val name:String) {
+abstract class Passive(name: String, displayName: String, description: List<String>) : Talent(name, description) {
+    val displayName = ConfigEntry.colorConfig("displayName", displayName)
+
+    abstract fun init()
+    abstract fun disable()
 
     open fun loadConfig() {
         val f = File(passiveFolder, "$name.yml")
@@ -23,6 +27,7 @@ abstract class Passive(val name:String) {
             cs.save(f)
         }
     }
+
     companion object {
         val passiveFolder: File by lazy {
             File(Main.Plugin.dataFolder, "passives").also {

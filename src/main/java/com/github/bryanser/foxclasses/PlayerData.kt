@@ -14,24 +14,46 @@ class PlayerData() : BrConfigurationSerializableV2 {
 
     @BrConfigurationSerializableV2.Config
     var exp: Int = 0
+
     @BrConfigurationSerializableV2.Config
-    val level: Int = 1
+    var level: Int = 1
+
     @BrConfigurationSerializableV2.Config
-    lateinit var skillData: SkillData
+    lateinit var talentData: TalentData
+
+    fun getReamingPoint():Int{
+        return level * 3 - talentData.data.values.sum()
+    }
+
+    fun getClassType():ClassType? {
+        TODO()
+    }
 
     constructor(p: Player) : this() {
         name = p.name
-        skillData = SkillData()
+        talentData = TalentData()
     }
 
 
     constructor(map: Map<String, Any?>) : this() {
         BrConfigurationSerializableV2.deserialize(map, this)
     }
+
+    companion object {
+        fun getData(p: Player): PlayerData {
+            TODO()
+        }
+    }
 }
 
-class SkillData : ConfigurationSerializable {
+class TalentData : ConfigurationSerializable {
     val data = hashMapOf<String, Int>()
+
+    fun getLevel(t: Talent): Int? = data[t.name]
+
+    fun levelUp(t:Talent){
+        data[t.name] = (data[t.name] ?: 0) + 1
+    }
 
     constructor()
 
@@ -40,6 +62,7 @@ class SkillData : ConfigurationSerializable {
             data[k] = v as Int
         }
     }
+
 
     override fun serialize(): MutableMap<String, Any> {
         val map = mutableMapOf<String, Any>()

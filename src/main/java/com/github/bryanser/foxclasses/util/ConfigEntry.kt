@@ -42,15 +42,27 @@ open class ConfigEntry<T>(
             cs[ce.key] = default.replace("§", "&")
         }
 
-        fun <V> mapConfig(key: String, map: Map<Int, V>): ConfigEntry<(Int) -> V?> {
-            return ConfigEntry<(Int) -> V?>(key, provider = fun(cs, ce): (Int) -> V? {
+        fun colorConfig(key: String, default: List<String>): ConfigEntry<List<String>> = ConfigEntry(key, provider = { cs, ce ->
+            cs.getStringList(ce.key).map {
+                ChatColor.translateAlternateColorCodes('&', it)
+            }
+        }) { cs, ce ->
+            cs[ce.key] = default.map { it.replace("§", "&") }
+        }
+
+        fun <V> mapConfig(key: String, map: Map<Int, V>): ConfigEntry<(Int) -> V> {
+            return ConfigEntry<(Int) -> V>(key, provider = fun(cs, ce): (Int) -> V {
                 val e = cs.getConfigurationSection(key)
                 val lv = hashMapOf<Int, V>()
+                var max = 1
                 for (key in e.getKeys(false)) {
                     lv[key.toInt()] = e.get(key) as V
+                    if (key.toInt() > max) {
+                        max = key.toInt()
+                    }
                 }
-                return fun(t): V? {
-                    return lv[t]
+                return fun(t): V {
+                    return lv[t] ?: lv[max]!!
                 }
             }) { cs, ce ->
                 val e = cs.createSection(key)

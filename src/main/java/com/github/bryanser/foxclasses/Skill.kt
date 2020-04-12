@@ -7,10 +7,15 @@ import java.io.File
 import java.util.*
 
 abstract class Skill(
-        val name: String
-) {
+        name: String,
+        displayName: String,
+        description: List<String>
+) : Talent(name,description) {
+    val displayName = ConfigEntry.colorConfig("displayName", displayName)
 
-    val maxLevel = ConfigEntry<Int>("maxLevel", 3)
+
+    abstract fun init()
+    abstract fun disable()
 
     val cooldown = ConfigEntry<(Int) -> Int>("cooldown", provider = fun(cs, ce): (Int) -> Int {
         val e = cs.getConfigurationSection("cooldown")

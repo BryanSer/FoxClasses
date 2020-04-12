@@ -120,6 +120,7 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -138,6 +139,13 @@
             <artifactId>BrAPI</artifactId>
             <version>Kt-1.0.5</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sx</groupId>
+            <artifactId>sx</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/[属性]SX-Attribute-MG.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
