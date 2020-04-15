@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 
 class ClassViewContext(p: Player) : VViewContext(p) {
     val pd = PlayerData.getData(p)
-    val classType = pd.getClassType() ?: throw IllegalArgumentException()
+    val classType = pd.getClassType() ?: throw IllegalArgumentException("§c未选择职业")
     val data = pd.talentData
 
     companion object {
@@ -28,7 +28,7 @@ class ClassViewContext(p: Player) : VViewContext(p) {
                 ::ClassViewContext
         ) {
             for (i in 0..7) {
-                button("btn_$i", "") {
+                button(" ", "") {
                     visible {
                         classType.talent.getOrNull(i) != null
                     }
@@ -52,6 +52,11 @@ class ClassViewContext(p: Player) : VViewContext(p) {
                     onClick {
                         val talent = classType.talent.getOrNull(i) ?:return@onClick
                         if(pd.getReamingPoint() > 0){
+                            val lv = data.getLevel(talent) ?: 0
+                            if(lv >= talent.maxLevel()){
+                                player.sendMessage("§c这个技能已经满级了")
+                                return@onClick
+                            }
                             data.levelUp(talent)
                             player.sendMessage("§6加点成功")
                             Bukkit.getScheduler().runTaskLater(Main.Plugin,{
@@ -63,7 +68,7 @@ class ClassViewContext(p: Player) : VViewContext(p) {
                         }
                     }
                 }
-                text(scale = 2.0) {
+                text(scale = 0.5) {
                     visible {
                         classType.talent.getOrNull(i) != null
                     }

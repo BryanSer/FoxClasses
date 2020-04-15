@@ -11,6 +11,11 @@ abstract class Skill(
         displayName: String,
         description: List<String>
 ) : Talent(name,description) {
+
+    init{
+        skills[name] = this
+    }
+
     val displayName = ConfigEntry.colorConfig("displayName", displayName)
 
 
@@ -43,11 +48,8 @@ abstract class Skill(
         }
         val cs = YamlConfiguration.loadConfiguration(f)
         var modify = false
-        for (field in this::class.java.fields) {
-            if (ConfigEntry::class.java.isAssignableFrom(field.type)) {
-                val ce = field.get(this) as ConfigEntry<*>
-                modify = modify or ce.load(cs)
-            }
+        for(ce in ConfigEntry.getEntry(this)){
+            modify = modify or ce.load(cs)
         }
         if (modify) {
             cs.save(f)
@@ -64,6 +66,8 @@ abstract class Skill(
 
 
     companion object {
+        val skills = hashMapOf<String,Skill>()
+
         val skillFolder: File by lazy {
             File(Main.Plugin.dataFolder, "skills").also {
                 if (!it.exists()) {
@@ -73,3 +77,4 @@ abstract class Skill(
         }
     }
 }
+

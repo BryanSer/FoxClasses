@@ -1,5 +1,6 @@
 package com.github.bryanser.foxclasses
 
+import com.github.bryanser.foxclasses.impl.warrior.Warrior
 import com.github.bryanser.foxclasses.util.ConfigEntry
 import org.bukkit.Material
 import org.bukkit.configuration.file.YamlConfiguration
@@ -93,40 +94,64 @@ abstract class ClassType(
             config.getConfigurationSection("Setting")!!
         } else {
             modify = true
-            config.createSection("Setting")
+            val t = config.createSection("Setting")
+            config["Setting"] = t
+            t
         }
-        for (field in this::class.java.fields) {
-            if (ConfigEntry::class.java.isAssignableFrom(field.type)) {
-                val ce = field.get(this) as ConfigEntry<*>
-                modify = modify or ce.load(cs)
-            }
+        for(ce in ConfigEntry.getEntry(this)){
+            modify = modify or ce.load(cs)
         }
         if (modify) {
             config.save(f)
         }
-        getSkills().forEach(Skill::loadConfig)
-        getPassives().forEach(Passive::loadConfig)
+        skills.forEach(Skill::loadConfig)
+        passives.forEach(Passive::loadConfig)
         if (inited) {
-            getSkills().forEach(Skill::disable)
-            getPassives().forEach(Passive::disable)
+            skills.forEach(Skill::disable)
+            passives.forEach(Passive::disable)
         }
         inited = true
-        getSkills().forEach(Skill::init)
-        getPassives().forEach(Passive::init)
+        skills.forEach(Skill::init)
+        passives.forEach(Passive::init)
     }
 
-    abstract fun getSkills(): List<Skill>
 
-    abstract fun getPassives(): List<Passive>
+    abstract val skills: List<Skill>
+
+    //abstract fun getSkills(): List<Skill>
+    abstract val passives: List<Passive>
+
+    //abstract fun getPassives(): List<Passive>
 
     val talent: List<Talent> by lazy {
         val list = mutableListOf<Talent>()
-        list.addAll(getSkills())
-        list.addAll(getPassives())
+        list.addAll(skills)
+        list.addAll(passives)
         list
     }
 
     companion object {
+        val classes = hashMapOf<String, ClassType>()
+
+        operator fun get(name: String?): ClassType? {
+            return classes[name ?: return null]
+        }
+
+        fun registerClass(ct: ClassType) {
+            classes[ct.name] = ct
+            ct.loadConfig()
+        }
+
+        fun reload() {
+            for (ct in classes.values) {
+                ct.loadConfig()
+            }
+        }
+
+        fun init() {
+            registerClass(Warrior)
+        }
+
         val classFolder: File by lazy {
             File(Main.Plugin.dataFolder, "classes").also {
                 if (!it.exists()) {

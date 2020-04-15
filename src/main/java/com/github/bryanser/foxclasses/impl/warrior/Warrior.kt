@@ -4,14 +4,16 @@ import com.github.bryanser.foxclasses.ClassType
 import com.github.bryanser.foxclasses.Passive
 import com.github.bryanser.foxclasses.Skill
 import com.github.bryanser.foxclasses.impl.warrior.passive.Strong
+import com.github.bryanser.foxclasses.impl.warrior.skill.XSword
 import org.bukkit.Material
 
 object Warrior : ClassType("Warrior", "战士", Material.DIAMOND_SWORD) {
-    override fun getSkills(): List<Skill> {
-        TODO("not implemented")
+
+    override val skills: List<Skill> by lazy {
+        listOf(XSword)
     }
 
-    override fun getPassives(): List<Passive> {
-        return listOf(Strong)
+    override val passives: List<Passive> by lazy {
+        listOf(Strong)
     }
 }

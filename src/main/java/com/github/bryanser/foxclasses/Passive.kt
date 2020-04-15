@@ -17,11 +17,8 @@ abstract class Passive(name: String, displayName: String, description: List<Stri
         }
         val cs = YamlConfiguration.loadConfiguration(f)
         var modify = false
-        for (field in this::class.java.fields) {
-            if (ConfigEntry::class.java.isAssignableFrom(field.type)) {
-                val ce = field.get(this) as ConfigEntry<*>
-                modify = modify or ce.load(cs)
-            }
+        for(ce in ConfigEntry.getEntry(this)){
+            modify = modify or ce.load(cs)
         }
         if (modify) {
             cs.save(f)

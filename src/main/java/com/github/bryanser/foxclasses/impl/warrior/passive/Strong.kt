@@ -5,7 +5,8 @@ import com.github.bryanser.foxclasses.Passive
 import com.github.bryanser.foxclasses.PlayerData
 import com.github.bryanser.foxclasses.impl.warrior.Warrior
 import com.github.bryanser.foxclasses.util.ConfigEntry
-import github.saukiya.sxattribute.data.condition.SXConditionType
+import github.saukiya.sxattribute.SXAttribute
+import github.saukiya.sxattribute.data.attribute.SXAttributeData
 import github.saukiya.sxattribute.event.SXLoadItemDataEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -23,18 +24,17 @@ object Strong : Passive(
     val damage = ConfigEntry.mapConfig("damage", mapOf(1 to 10.0, 2 to 20.0, 3 to 25.0))
 
     @EventHandler
-    fun onAttribute(evt:SXLoadItemDataEvent){
-        if(evt.type != SXConditionType.EQUIPMENT){
-            return
-        }
-        val pd = PlayerData.getData(evt.entity as? Player ?: return)
-        if(pd.getClassType() != Warrior){
+    fun onAttribute(evt: SXLoadItemDataEvent) {
+        val p = evt.entity as? Player ?: return
+        val pd = PlayerData.getData(p)
+        if (pd.getClassType() != Warrior) {
             return
         }
         val lv = pd.talentData.getLevel(this) ?: return
-        val hdata = evt.attributeData.getSubAttribute("Health")
+        val data = addAttribute(p)
+        val hdata = data.getSubAttribute("Health")
         hdata.attributes[0] += health()(lv)
-        val ddata = evt.attributeData.getSubAttribute("Damage")
+        val ddata = data.getSubAttribute("Damage")
         val dmg = damage()(lv)
         ddata.attributes[0] += dmg
         ddata.attributes[1] += dmg

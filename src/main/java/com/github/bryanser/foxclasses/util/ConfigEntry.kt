@@ -25,6 +25,10 @@ open class ConfigEntry<T>(
         return modify
     }
 
+    override fun toString(): String {
+        return this().toString()
+    }
+
     operator fun invoke(): T = data as T
 
     inline fun <reified R> get(): R {
@@ -36,6 +40,22 @@ open class ConfigEntry<T>(
     }
 
     companion object {
+
+        fun getEntry(obj: Any): List<ConfigEntry<*>> {
+            val list = mutableListOf<ConfigEntry<*>>()
+            var curr:Class<*> = obj::class.java
+            while (curr != Object::class.java) {
+                for (df in curr.declaredFields) {
+                    if (ConfigEntry::class.java.isAssignableFrom(df.type)) {
+                        df.isAccessible = true
+                        list.add(df.get(obj) as ConfigEntry<*>)
+                    }
+                }
+                curr = curr.superclass as Class<*>
+            }
+            return list
+        }
+
         fun colorConfig(key: String, default: String): ConfigEntry<String> = ConfigEntry(key, provider = { cs, ce ->
             ChatColor.translateAlternateColorCodes('&', cs.getString(ce.key))
         }) { cs, ce ->

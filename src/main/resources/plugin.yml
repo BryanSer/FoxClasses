@@ -1,4 +1,11 @@
 name: FoxClasses
 version: ${project.version}
-main: com.github.bryanser.foxclasses.Main\
-depend: [FoxClasses]
+main: com.github.bryanser.foxclasses.Main
+depend: [BrAPI,SX-Attribute]
+commands:
+    FoxClasses:
+        aliases: [class,fc]
+        usage: |
+            §6/<command> 打开职业UI
+            §6/<command> class [职业] 选择一个职业
+            §6/<command> reload >> 重载插件
