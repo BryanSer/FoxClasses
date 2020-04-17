@@ -10,9 +10,9 @@ abstract class Skill(
         name: String,
         displayName: String,
         description: List<String>
-) : Talent(name,description) {
+) : Talent(name, description) {
 
-    init{
+    init {
         skills[name] = this
     }
 
@@ -48,7 +48,7 @@ abstract class Skill(
         }
         val cs = YamlConfiguration.loadConfiguration(f)
         var modify = false
-        for(ce in ConfigEntry.getEntry(this)){
+        for (ce in ConfigEntry.getEntry(this)) {
             modify = modify or ce.load(cs)
         }
         if (modify) {
@@ -59,14 +59,22 @@ abstract class Skill(
     fun tryCast(p: Player) {
         val last = lastCast[p.uniqueId] ?: 0L
         val pass = System.currentTimeMillis() - last
-        TODO()
+        val pd = PlayerData.getData(p)
+        val lv = pd.talentData.getLevel(this) ?: return
+        val cd = cooldown()(lv)
+        if (pass < cd) {
+            p.sendMessage("§c技能${displayName()}还在冷却中. 还需要${String.format("%.2f", (cd - pass) / 1000.0)}秒")
+            return
+        }
+        this.cast(p)
+        lastCast[p.uniqueId] = System.currentTimeMillis()
     }
 
     abstract fun cast(p: Player)
 
 
     companion object {
-        val skills = hashMapOf<String,Skill>()
+        val skills = hashMapOf<String, Skill>()
 
         val skillFolder: File by lazy {
             File(Main.Plugin.dataFolder, "skills").also {
