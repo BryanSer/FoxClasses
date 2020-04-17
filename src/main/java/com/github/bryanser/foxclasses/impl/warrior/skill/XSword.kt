@@ -14,7 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable
 
 object XSword : Skill("XSword", "X剑气", listOf("§6快速向前方划出两道交叉的X形状剑气")) {
 
-    val damage = ConfigEntry.mapConfig("damage", mapOf(1 to 10.0, 2 to 20.0, 3 to 30.0))
+    val damage = ConfigEntry.expressionConfig("damage", "%level% * 20 + %sx_damage%")
     override fun init() {
     }
 
@@ -32,7 +32,7 @@ object XSword : Skill("XSword", "X剑气", listOf("§6快速向前方划出两�
         val right = loc.add(Utils.getRight(vec).multiply(1.5))
         val front = loc.add(vec.clone().multiply(3.0))
         val damaged = hashSetOf<Int>()
-        val dmg = damage()(lv)
+        val dmg = damage()(p, lv).toDouble()
         draw(left, front, Color.BLUE) {
             if (it != p && it.entityId !in damaged) {
                 damaged.add(it.entityId)

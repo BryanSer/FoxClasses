@@ -43,7 +43,7 @@ open class ConfigEntry<T>(
 
         fun getEntry(obj: Any): List<ConfigEntry<*>> {
             val list = mutableListOf<ConfigEntry<*>>()
-            var curr:Class<*> = obj::class.java
+            var curr: Class<*> = obj::class.java
             while (curr != Object::class.java) {
                 for (df in curr.declaredFields) {
                     if (ConfigEntry::class.java.isAssignableFrom(df.type)) {
@@ -68,6 +68,25 @@ open class ConfigEntry<T>(
             }
         }) { cs, ce ->
             cs[ce.key] = default.map { it.replace("§", "&") }
+        }
+
+        fun expressionConfig(key: String, default: String): ConfigEntry<Expression> {
+            return ConfigEntry<Expression>(key, null, fun(cs, ce): Expression {
+                val s = cs.getString(ce.key, default)
+                return ExpressionHelper.compileExpression(s)
+            }) { cs, ce ->
+                cs[ce.key] = default
+            }
+        }
+
+
+        fun booleanExpressionConfig(key: String, default: String): ConfigEntry<Expression> {
+            return ConfigEntry<Expression>(key, null, fun(cs, ce): Expression {
+                val s = cs.getString(ce.key, default)
+                return ExpressionHelper.compileExpression(s, true)
+            }) { cs, ce ->
+                cs[ce.key] = default
+            }
         }
 
         fun <V> mapConfig(key: String, map: Map<Int, V>): ConfigEntry<(Int) -> V> {
