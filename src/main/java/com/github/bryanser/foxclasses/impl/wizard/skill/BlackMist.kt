@@ -25,7 +25,7 @@ object BlackMist : Skill("BlackMist",
 ) {
 
     val damage = ConfigEntry.expressionConfig("damage", "%level% * 20 + %sx_damage%")
-    val distance = ConfigEntry.mapConfig("distance", mapOf(1 to 25, 2 to 25, 3 to 25))
+    val distance = ConfigEntry.mapConfig("distance", mapOf(1 to 7, 2 to 7, 3 to 7))
 
     val casting = hashMapOf<UUID, Int>()
 
