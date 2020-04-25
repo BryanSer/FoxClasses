@@ -9,7 +9,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import java.util.*
 
-object CloudArrow : Skill("ExplosiveArrow",
+object CloudArrow : Skill("CloudArrow",
         "穿云箭",
         listOf(
                 "§6延迟1秒后向鼠标所指位置发射一根速度极快不会下落的箭造成伤害",
