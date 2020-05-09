@@ -6,8 +6,9 @@ import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.entity.Player
 import java.util.regex.Pattern
 
-typealias Expression = (Player,Int) -> ExpressionResult
+typealias Expression = (Player, Int) -> ExpressionResult
 typealias VarReader = (Player, String) -> String?
+
 object ExpressionHelper {
     val compile = Pattern.compile("(?<pattern>%(?<name>[^%]*)%)")
     val levelHolder = mutableMapOf<Int, Int>()
@@ -41,7 +42,7 @@ object ExpressionHelper {
         if (src.startsWith("[Script]")) {
             /*如果是完全独立脚本写法应该如下
              * [Script]
-             * function calc(p){
+             * function calc(p, lv){
              *    你的代码;
              *    return 一个值;
              * }
@@ -51,16 +52,16 @@ object ExpressionHelper {
             val t = ScriptManager.createScriptEngine(Main.Plugin)
             t.eval(src)
             if (isBoolean) {
-                return {it,lv->
+                return { it, lv ->
                     levelHolder[it.entityId] = lv
-                    val d = t.invokeFunction("calc", it)as? Boolean ?: true
+                    val d = t.invokeFunction("calc", it, lv) as? Boolean ?: true
                     ExpressionResult(d)
                 }
 
             } else {
-                return {it,lv->
+                return { it, lv ->
                     levelHolder[it.entityId] = lv
-                    val d = t.invokeFunction("calc", it)as? Double ?: 0.0
+                    val d = t.invokeFunction("calc", it, lv) as? Double ?: 0.0
                     ExpressionResult(d)
                 }
             }
@@ -94,7 +95,7 @@ object ExpressionHelper {
         println("编译脚本: $scrr")
         t.eval(scrr)
         if (isBoolean) {
-            return {it,lv->
+            return { it, lv ->
                 levelHolder[it.entityId] = lv
                 val vari = mutableListOf<Double>()
                 for ((par, _) in vars) {
@@ -104,7 +105,7 @@ object ExpressionHelper {
                 ExpressionResult(b)
             }
         } else {
-            return {it,lv->
+            return { it, lv ->
                 levelHolder[it.entityId] = lv
                 val vari = mutableListOf<Double>()
                 for ((par, _) in vars) {

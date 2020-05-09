@@ -16,7 +16,7 @@ object Spike : Skill("Spike",
 ) {
 
     val damage = ConfigEntry.expressionConfig("damage", "%level% * 20 + %sx_damage%")
-    val distance = ConfigEntry.mapConfig("distance", mapOf(1 to 25, 2 to 25, 3 to 25))
+//    val distance = ConfigEntry.expressionConfig("distance", "%level% * 2 + 20")
 
     val casting = hashMapOf<UUID, Int>()
 
@@ -33,7 +33,7 @@ object Spike : Skill("Spike",
 
         val damaged = mutableSetOf<Int>()
         val knock = 3
-        Motion.charge(p, 5.0) { e ->
+        Motion.charge(p, 4.0) { e ->
             if (!damaged.contains(e.entityId)) {
                 e.damage(dmg, p)
                 val tvec = e.location.subtract(p.location).toVector()

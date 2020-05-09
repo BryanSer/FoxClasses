@@ -26,9 +26,9 @@ object Guardian : Skill("Guardian",
                 "§6持续4秒(期间施法者脚底围绕少量红色)"
         )
 ), Listener {
-    val round = ConfigEntry.mapConfig("round", mapOf(1 to 3, 2 to 4, 3 to 5))
+    val radius = ConfigEntry.expressionConfig("radius", "%level% + 2")
 
-    val damageReductionRate = ConfigEntry.mapConfig("damageReductionRate", mapOf(1 to 0.3, 2 to 0.4, 3 to 0.5))
+    val damageReductionRate = ConfigEntry.expressionConfig("damageReductionRate", "%level% * 0.1 + 0.2")
 
     val casting = hashMapOf<UUID, Int>()
 
@@ -53,13 +53,14 @@ object Guardian : Skill("Guardian",
         val time = 4.0
 
         val loc = p.location
-        val round = round()(lv).toDouble()
+        val round = radius()(p, lv).toDouble()
 
         for (e in loc.world.getNearbyEntities(loc, round, round, round)) {
-            if (e is LivingEntity) {
+            if (e is LivingEntity && e !is Player) {
                 /**
                  * 嘲讽
                  */
+
 
                 /**
                  * 减速度
@@ -91,11 +92,11 @@ object Guardian : Skill("Guardian",
         /**
          * 减伤
          */
-        val damageReductionRate = damageReductionRate()(lv)
+        val damageReductionRate = damageReductionRate()(p, lv).toDouble()
 
         guardianList[p.uniqueId] = damageReductionRate
         Bukkit.getScheduler().runTaskLater(Main.Plugin, fun() {
-
+            guardianList.remove(p.uniqueId)
         }, time.toLong() * 20)
     }
 

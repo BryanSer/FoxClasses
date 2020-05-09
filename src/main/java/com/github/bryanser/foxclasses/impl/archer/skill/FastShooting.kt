@@ -3,10 +3,11 @@ package com.github.bryanser.foxclasses.impl.archer.skill
 import com.github.bryanser.foxclasses.Main
 import com.github.bryanser.foxclasses.PlayerData
 import com.github.bryanser.foxclasses.Skill
+import com.github.bryanser.foxclasses.util.Arrow
 import com.github.bryanser.foxclasses.util.ConfigEntry
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 object FastShooting : Skill("FastShooting",
@@ -17,7 +18,7 @@ object FastShooting : Skill("FastShooting",
 ) {
 
     val damage = ConfigEntry.expressionConfig("damage", "%level% * 20 + %sx_damage%")
-    val distance = ConfigEntry.mapConfig("distance", mapOf(1 to 25, 2 to 25, 3 to 25))
+    const val distance = 50.0
 
     val casting = hashMapOf<UUID, Int>()
 
@@ -32,20 +33,28 @@ object FastShooting : Skill("FastShooting",
         casting[p.uniqueId] = lv
         val target = p.getTargetBlock(mutableSetOf(Material.AIR), 50).location.direction ?: return
 
-        val distance = distance()(lv).toDouble()
+        val distance = distance
         val dmg = damage()(p, lv).toDouble()
 
         val loc = p.location
-        val damaged = hashSetOf<Int>()
-
-        for (i in 0 until 10){
-            Arrow.cast(p, loc, distance, target,false) {
-                if (it != p && it.entityId !in damaged) {
-                    damaged.add(it.entityId)
-                    it.damage(dmg, p)
+        object : BukkitRunnable() {
+            val damaged = hashSetOf<Int>()
+            var amount = 0
+            override fun run() {
+                if (amount++ >= 10) {
+                    cancel()
+                    return
+                }
+                Arrow.cast(p, loc, distance, target, false) {
+                    if (it != p && it.entityId !in damaged) {
+                        damaged.add(it.entityId)
+                        it.damage(dmg, p)
+                    }
                 }
             }
-        }
+
+        }.runTaskTimer(Main.Plugin, 1, 1)
+
     }
 
 

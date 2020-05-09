@@ -1,13 +1,13 @@
 package com.github.bryanser.foxclasses.util
 
 import com.github.bryanser.foxclasses.Main
-import com.github.bryanser.foxclasses.impl.archer.skill.distanceSquared2
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
+import kotlin.math.pow
 
 object Motion {
     fun knock(p: Player, target: LivingEntity, dis: Double) {
@@ -41,8 +41,7 @@ object Motion {
                lengthSq1: Double,
                effect: (LivingEntity) -> Unit
     ): MutableList<LivingEntity> {
-        var lengthSq = lengthSq1
-        lengthSq *= lengthSq
+        val lengthSq = lengthSq1.pow(2)
 
         //val stop = stop(player).toBoolean()
 

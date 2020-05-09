@@ -56,6 +56,9 @@ object ExpManager : Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onChangeSkill(evt: PlayerToggleSneakEvent) {
+        if(!evt.isSneaking){
+            return
+        }
         val pd = PlayerData.getData(evt.player)
         val ct = pd.getClassType() ?: return
         val type = evt.player.inventory.itemInHand?.type ?: return

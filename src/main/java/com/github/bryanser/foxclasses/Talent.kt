@@ -21,7 +21,6 @@ abstract class Talent(val name: String, description: List<String>) {
     fun addAttribute(p: Player): SXAttributeData {
         val data = SXAttributeData()
         setValid(data)
-        println(this::class.java.simpleName)
         SXAttribute.getApi().setEntityAPIData(this::class.java, p.uniqueId, data)
         return data
     }

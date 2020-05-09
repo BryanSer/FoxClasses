@@ -28,7 +28,7 @@ object ExplosiveArrow : Skill("ExplosiveArrow",
 ), Listener {
 
     val damage = ConfigEntry.expressionConfig("damage", "%level% * 20 + %sx_damage%")
-    val range = ConfigEntry.mapConfig("range", mapOf(1 to 1.5, 2 to 2.0, 3 to 3.0))
+    const val range = 2.0
 
     val casting = hashMapOf<UUID, Int>()
     val flying = hashMapOf<UUID, Pair<Int, UUID>>()
@@ -51,7 +51,7 @@ object ExplosiveArrow : Skill("ExplosiveArrow",
         val p = Bukkit.getPlayer(uid) ?: return
         val loc = evt.hitBlock?.location ?: (evt.hitEntity?.location ?: return)
         val dmg = damage()(p, lv).toDouble()
-        val r = range()(lv)
+        val r = range
 
         ParticleEffect.EXPLOSION_HUGE.display(Vector.getRandom(), 1f, loc, 50.0)
 

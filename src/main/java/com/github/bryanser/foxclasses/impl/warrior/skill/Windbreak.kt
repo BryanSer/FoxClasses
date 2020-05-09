@@ -21,9 +21,11 @@ object Windbreak : Skill("Windbreak",
 ) {
 
     val damage = ConfigEntry.expressionConfig("damage", "%level% * 20 + %sx_damage%")
-    val round = ConfigEntry.mapConfig("round", mapOf(1 to 3, 2 to 4, 3 to 5))
+//    val round = ConfigEntry.mapConfig("round", mapOf(1 to 3, 2 to 4, 3 to 5))
 
+    const val radius = 3.0
     val casting = hashMapOf<UUID, Int>()
+    const val time = 4.0
 
     override fun init() {
     }
@@ -35,12 +37,11 @@ object Windbreak : Skill("Windbreak",
         val lv = PlayerData.getData(p).talentData.getLevel(this) ?: return
         casting[p.uniqueId] = lv
         val dmg = damage()(p, lv).toDouble()
-        val time = 4.0
 
-        val round = round()(lv).toDouble()
-        val damaged = mutableSetOf<UUID>()
+//        val radius = round()(lv).toDouble()
 
         object : BukkitRunnable() {
+            val damaged = mutableSetOf<UUID>()
             var t = 0
             override fun run() {
                 if (t % 20 == 0) {
@@ -60,8 +61,8 @@ object Windbreak : Skill("Windbreak",
                 /**
                  * 每秒造成伤害
                  */
-                for (e in loc.world.getNearbyEntities(loc, round, round, round)) {
-                    if (e is LivingEntity && e.uniqueId !in damaged) {
+                for (e in loc.world.getNearbyEntities(loc, radius, radius, radius)) {
+                    if (e is LivingEntity && e.uniqueId !in damaged && e != p) {
                         damaged.add(e.uniqueId)
                         e.damage(dmg)
                     }

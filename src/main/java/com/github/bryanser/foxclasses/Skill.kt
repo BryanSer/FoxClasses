@@ -1,5 +1,6 @@
 package com.github.bryanser.foxclasses
 
+import com.github.bryanser.foxclasses.mana.ManaAttribute
 import com.github.bryanser.foxclasses.util.ConfigEntry
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -38,6 +39,8 @@ abstract class Skill(
         e["3"] = 3000
     }
 
+    val manaCost = ConfigEntry.expressionConfig("manaCost","%level% * 10 + 50")
+
     val lastCast = hashMapOf<UUID, Long>()
 
 
@@ -64,6 +67,10 @@ abstract class Skill(
         val cd = cooldown()(lv)
         if (pass < cd) {
             p.sendMessage("§c技能${displayName()}还在冷却中. 还需要${String.format("%.2f", (cd - pass) / 1000.0)}秒")
+            return
+        }
+        if(!ManaAttribute.costMana(p,manaCost()(p,lv).toDouble(),true)){
+            p.sendMessage("§c技能${displayName()}无法释放: 蓝量不足")
             return
         }
         this.cast(p)

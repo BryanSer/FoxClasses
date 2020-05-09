@@ -1,7 +1,6 @@
-package com.github.bryanser.foxclasses.impl.archer.skill
+package com.github.bryanser.foxclasses.util
 
 import com.github.bryanser.foxclasses.Main
-import com.github.bryanser.foxclasses.util.ArmorStandManager
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
@@ -14,7 +13,7 @@ import org.bukkit.util.Vector
 import kotlin.math.PI
 
 object Arrow {
-    fun cast(p: Player, loc: Location, distance: Double, vector: Vector,penetrate: Boolean, effect: (LivingEntity) -> Unit) {
+    fun cast(p: Player, loc: Location, distance: Double, vector: Vector, penetrate: Boolean, effect: (LivingEntity) -> Unit) {
         val isType = ItemStack(Material.ARROW)
 
         val arrowAS = ArmorStandManager.createArmorStand(
