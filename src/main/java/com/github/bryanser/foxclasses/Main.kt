@@ -1,6 +1,8 @@
 package com.github.bryanser.foxclasses
 
 import com.github.bryanser.foxclasses.mana.ManaAttribute
+import com.github.bryanser.foxclasses.util.ImmobilizeManager
+import com.github.bryanser.foxclasses.util.SpeedManager
 import com.github.bryanser.foxclasses.view.ClassViewContext
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -23,6 +25,8 @@ class Main : JavaPlugin() {
         Bukkit.getPluginManager().registerEvents(ExpManager, this)
         Bukkit.getPluginManager().registerEvents(PlayerData.Companion, this)
         ManaAttribute.init()
+        SpeedManager.init()
+        ImmobilizeManager.init()
     }
 
     override fun onDisable() {

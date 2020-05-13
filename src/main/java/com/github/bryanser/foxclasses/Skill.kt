@@ -1,5 +1,6 @@
 package com.github.bryanser.foxclasses
 
+import com.github.bryanser.foxclasses.impl.wizard.passive.OlympusAffinity
 import com.github.bryanser.foxclasses.mana.ManaAttribute
 import com.github.bryanser.foxclasses.util.ConfigEntry
 import org.bukkit.configuration.file.YamlConfiguration
@@ -23,7 +24,7 @@ abstract class Skill(
     abstract fun init()
     abstract fun disable()
 
-    val cooldown = ConfigEntry<(Int) -> Int>("cooldown", provider = fun(cs, ce): (Int) -> Int {
+    private val cooldown = ConfigEntry<(Int) -> Int>("cooldown", provider = fun(cs, ce): (Int) -> Int {
         val e = cs.getConfigurationSection("cooldown")
         val cd = hashMapOf<Int, Int>()
         for (key in e.getKeys(false)) {
@@ -39,7 +40,17 @@ abstract class Skill(
         e["3"] = 3000
     }
 
-    val manaCost = ConfigEntry.expressionConfig("manaCost","%level% * 10 + 50")
+    fun getCooldown(pd: PlayerData): Int {
+        val lv = pd.talentData.getLevel(this) ?: return Int.MAX_VALUE
+        var cd = cooldown()(lv)
+        pd.talentData.getLevel(OlympusAffinity)?.run {
+            val red = OlympusAffinity.cdReduce()(this)
+            cd = (cd * (1 - red)).toInt()
+        }
+        return cd
+    }
+
+    val manaCost = ConfigEntry.expressionConfig("manaCost", "%level% * 10 + 50")
 
     val lastCast = hashMapOf<UUID, Long>()
 
@@ -64,12 +75,12 @@ abstract class Skill(
         val pass = System.currentTimeMillis() - last
         val pd = PlayerData.getData(p)
         val lv = pd.talentData.getLevel(this) ?: return
-        val cd = cooldown()(lv)
+        val cd = getCooldown(pd)
         if (pass < cd) {
             p.sendMessage("§c技能${displayName()}还在冷却中. 还需要${String.format("%.2f", (cd - pass) / 1000.0)}秒")
             return
         }
-        if(!ManaAttribute.costMana(p,manaCost()(p,lv).toDouble(),true)){
+        if (!ManaAttribute.costMana(p, manaCost()(p, lv).toDouble(), true)) {
             p.sendMessage("§c技能${displayName()}无法释放: 蓝量不足")
             return
         }

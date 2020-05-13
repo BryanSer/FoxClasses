@@ -29,7 +29,7 @@ open class ConfigEntry<T>(
         return this().toString()
     }
 
-    operator fun invoke(): T = data as T
+    inline operator fun invoke(): T = data as T
 
     inline fun <reified R> get(): R {
         if (data is R) {

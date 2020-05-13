@@ -14,7 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.io.File
 import java.util.*
 
-class ManaAttribute : SubAttribute("Stamina", 5, SXAttributeType.UPDATE) {
+class ManaAttribute : SubAttribute("Mana", 5, SXAttributeType.UPDATE) {
 //max maxu rec recu cost
 
     data class ManaData(

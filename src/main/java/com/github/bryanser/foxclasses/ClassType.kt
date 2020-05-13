@@ -2,6 +2,7 @@ package com.github.bryanser.foxclasses
 
 import com.github.bryanser.foxclasses.impl.archer.Archer
 import com.github.bryanser.foxclasses.impl.warrior.Warrior
+import com.github.bryanser.foxclasses.impl.wizard.Wizard
 import com.github.bryanser.foxclasses.util.ConfigEntry
 import org.bukkit.Material
 import org.bukkit.configuration.file.YamlConfiguration
@@ -152,6 +153,7 @@ abstract class ClassType(
         fun init() {
             registerClass(Warrior)
             registerClass(Archer)
+            registerClass(Wizard)
         }
 
         val classFolder: File by lazy {

@@ -141,6 +141,7 @@ object SpeedManager : EffectManager<SpeedManager.SpeedData>(3) {
 }
 
 //眩晕
+@Deprecated("未使用")
 object VertigoManager : EffectManager<VertigoManager.VertigoData>(-1) {
 
     val endTime = hashMapOf<UUID, Long>()
@@ -179,6 +180,7 @@ object VertigoManager : EffectManager<VertigoManager.VertigoData>(-1) {
 }
 
 //失明
+@Deprecated("未使用")
 object BlindnessManager : EffectManager<BlindnessManager.BlindnessData>(2) {
 
     data class BlindnessData(var timeLength: Double) : EffectData<BlindnessData> {
@@ -199,6 +201,7 @@ object BlindnessManager : EffectManager<BlindnessManager.BlindnessData>(2) {
 }
 
 //无敌
+@Deprecated("未使用")
 object InvincibleManager : EffectManager<InvincibleManager.Invincibledata>(2) {
 
     data class Invincibledata(
@@ -241,6 +244,7 @@ object ImmobilizeManager : EffectManager<ImmobilizeManager.ImmobilizeData>(2) {
 }
 
 //沉默
+@Deprecated("未使用")
 object SilentManager : EffectManager<SilentManager.SilentData>(2) {
     data class SilentData(
             var timeLength: Double) : EffectData<SilentData> {
@@ -258,6 +262,7 @@ object SilentManager : EffectManager<SilentManager.SilentData>(2) {
 }
 
 //着火
+@Deprecated("未使用")
 object InflameManager : EffectManager<InflameManager.InflameData>(2) {
     data class InflameData(
             var timeLength: Double) : EffectData<InflameData> {
@@ -276,6 +281,7 @@ object InflameManager : EffectManager<InflameManager.InflameData>(2) {
 }
 
 //冰冻
+@Deprecated("未使用")
 object FrozenManager : EffectManager<FrozenManager.FrozenData>(2) {
     data class FrozenData(
             /**
